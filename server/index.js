@@ -1,6 +1,6 @@
-import express from 'express';
+import { startApolloServer } from './app'
 
-const app = express()
+startApolloServer();
 
-app.listen(3000)
+app.listen(3000);
 console.log('Server on port 3000');
