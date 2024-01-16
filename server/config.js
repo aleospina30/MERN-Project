@@ -1,0 +1,1 @@
+export const MONGODB = 'mongodb+srv://Sejotaz:prueba123@mongodb1.ndvxls9.mongodb.net/mongo-crud'

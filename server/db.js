@@ -1,8 +1,10 @@
 import mongoose from 'mongoose';
+import {MONGODB} from './config.js';
+
 
 export const connectDB = async () => {
    try{
-    const conn = await mongoose.connect("mongodb+srv://Sejotaz:prueba123@mongodb1.ndvxls9.mongodb.net/");
+    const conn = await mongoose.connect(MONGODB);
    console.log(`Mongo connected: ${conn.connection.name} `);
    } catch (error) {
     console.error(`Error: ${error.message}`);
