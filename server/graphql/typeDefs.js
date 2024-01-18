@@ -2,20 +2,18 @@ import { gql } from "graphql-tag";
 
 export const typeDefs = gql`
   type Query {
-    projects: [Project]
-    project(_id: ID!): Project
+    project(_id: ID): [Project]
     
-    tasks: [Task]
-    task(_id: ID!): Task
+    task(_id: ID!): [Task]
   }
 
   type Mutation {
-    createProject(name: String!, description: String): Project
+    createProject(input: Project_input): Project
     deleteProject(_id: ID!): Boolean
-    updateProject(_id: ID!, name: String, description: String):Project
-    createTask(title: String, projectId: ID): Task
+    updateProject(input: Project_input):Project
+    createTask(input: Task_input): Task
     deleteTask(_id: ID!): Boolean
-    updateTask(_id: ID!, title: String! projectId: ID!):Task
+    updateTask(input: Task_input):Task
   }
 
   type Project {
@@ -33,6 +31,18 @@ export const typeDefs = gql`
     project: Project
     createdAt: String
     updatedAt: String
+  }
+
+  input Project_input{
+    _id: String
+    name: String
+    description: String
+  }
+
+  input Task_input{
+    _id: String
+    title: String
+    projectId: String
   }
   
 `
