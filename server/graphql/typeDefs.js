@@ -2,19 +2,19 @@ import { gql } from "graphql-tag";
 
 export const typeDefs = gql`
   type Query {
-    hello: String
     projects: [Project]
     project(_id: ID!): Project
-    task(_id: ID!): Task
+    
     tasks: [Task]
+    task(_id: ID!): Task
   }
 
   type Mutation {
-    createProject(name: String, description: String): Project
-    deleteProject(_id: ID!): Project
-    updateProject(_id: ID!, name: String! description: String):Project
+    createProject(name: String!, description: String): Project
+    deleteProject(_id: ID!): Boolean
+    updateProject(_id: ID!, name: String, description: String):Project
     createTask(title: String, projectId: ID): Task
-    deleteTask(_id: ID!): Task
+    deleteTask(_id: ID!): Boolean
     updateTask(_id: ID!, title: String! projectId: ID!):Task
   }
 
@@ -34,4 +34,5 @@ export const typeDefs = gql`
     createdAt: String
     updatedAt: String
   }
+  
 `

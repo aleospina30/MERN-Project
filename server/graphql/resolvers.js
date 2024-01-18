@@ -4,7 +4,6 @@ import Task from "../models/Task.js";
 export const resolvers = {
   //Consultas
   Query: {
-    hello: () => "Hello world!",
     projects: async () => await Project.find(),
     project: async (_,{ _id}) => await Project.findById(_id),
     task: async (_,{ _id}) => await Task.findById(_id),
@@ -38,12 +37,12 @@ export const resolvers = {
 
       Task.deleteMany({ projectId: deletedProject._id})
 
-      return deletedProject;
+      return true;
     },
     deleteTask: async (_, {_id}) => {
       const deletedTask = await Task.findByIdAndDelete(_id);
       if(!deletedTask) throw new Error('Task not found')
-      return deletedTask;
+      return true;
     },
     updateProject: async (_, args) => {
       const updatedProject = await Project.findByIdAndUpdate(args._id,args, {
