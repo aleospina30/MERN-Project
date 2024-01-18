@@ -2,13 +2,21 @@ import Project from "../models/Project.js";
 import Task from "../models/Task.js";
 
 //Funciones Query
-const projects = async () => await Project.find();
-const project = async (_, { _id }) => await Project.findById(_id);
-const tasks = async () => await Task.find();
-const task = async (_, { _id }) => await Task.findById(_id);
+const project = async (_, { _id }) => {
+  const query = {}
+  if(_id)query._id = _id
+  return await Project.find(query)
+} 
+
+const task = async (_, { _id }) => {
+  const query = {}
+  if(_id)query._id = _id
+  return await Task.find(query)
+} 
 
 //Funciones Mutation
-const createProject = async (_, { name, description }) => {
+const createProject = async (_, { input }) => {
+  const { name, description } = input
   const project = new Project({
     name,
     description,
@@ -26,8 +34,9 @@ const deleteProject = async (_, { _id }) => {
   return true;
 };
 
-const updateProject = async (_, { _id, name, description }) => {
+const updateProject = async (_, { input }) => {
   try {
+    const { _id, name, description } = input
     const update = {};
     if (name) update.name = name;
     if (description) update.description = description;
@@ -42,7 +51,8 @@ const updateProject = async (_, { _id, name, description }) => {
   }
 };
 
-const createTask = async (_, { title, projectId }) => {
+const createTask = async (_, { input }) => {
+  const { title, projectId } = input
   const projectFound = await Project.findById(projectId);
   if (!projectFound) throw new Error("Project not found");
 
@@ -60,8 +70,9 @@ const deleteTask = async (_, { _id }) => {
   return true;
 };
 
-const updateTask = async (_, { _id, title, projectId }) => {
+const updateTask = async (_, { input }) => {
   try {
+    const { _id, title, projectId } = input
     const update = {};
     if (name) update.title = title;
     if (projectId) update.projectId = projectId;
@@ -85,9 +96,7 @@ const tasksType = async (parent) => await Task.find({ projectId: parent._id });
 export const resolvers = {
   //Consultas
   Query: {
-    projects,
     project,
-    tasks,
     task,
   },
   //Cambios en la BD
