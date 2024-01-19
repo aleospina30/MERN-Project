@@ -3,6 +3,9 @@ import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import cors  from 'cors'
 import http from 'http'
+import { config } from "dotenv";
+
+config()
 
 export async function startApolloServer(typeDefs, resolvers) {
   const app = express();
@@ -19,7 +22,7 @@ export async function startApolloServer(typeDefs, resolvers) {
   app.use("/graphql", cors(), express.json(), expressMiddleware(server));
 
   await new Promise(resolve => httpServer.listen({
-    port: 4000
+    port: process.env.PORT
   }, resolve))
   console.log(` Server ready at https://localhost:4000`);
 }
