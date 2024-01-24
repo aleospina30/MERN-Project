@@ -3,9 +3,14 @@ import Task from "../../models/Task.js";
 
 
 const project = async (_, { _id }) => {
-  const query = {};
+  try {
+    const query = {};
   if (_id) query._id = _id;
   return await Project.find(query);
+  } catch (error) {
+    console.error(error);
+    return error
+  }
 };
 
 const createProject = async (_, { input }) => {

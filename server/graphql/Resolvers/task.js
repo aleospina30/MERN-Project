@@ -2,9 +2,14 @@ import Task from "../../models/Task.js";
 import Project from "../../models/Project.js";
 
 const task = async (_, { _id }) => {
+  try {
   const query = {};
   if (_id) query._id = _id;
+  else {throw new Error('No encuentro una monda')}
   return await Task.find(query);
+  } catch (error){
+    console.error(error)
+  }
 };
 
 const createTask = async (_, { input }) => {
