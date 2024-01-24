@@ -9,6 +9,7 @@ config()
 
 export async function startApolloServer(typeDefs, resolvers) {
   const app = express();
+  app.use(cors())
   const httpServer = http.createServer(app)
   app.get('/', (req,res) => res.send('Welcome to my API'))
 
