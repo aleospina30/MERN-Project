@@ -8,12 +8,12 @@ const project = async (_, { _id }) => {
   if (_id) query._id = _id;
   return await Project.find(query);
   } catch (error) {
-    console.error(error);
     return error
   }
 };
 
-const createProject = async (_, { input }) => {
+const projectCreate = async (_, { input }) => {
+ try {
   const { name, description } = input;
   const project = new Project({
     name,
@@ -21,18 +21,25 @@ const createProject = async (_, { input }) => {
   });
   const savedProject = await project.save();
   return savedProject;
+ } catch (error) {
+  return error
+ }
 };
 
-const deleteProject = async (_, { _id }) => {
-  const deletedProject = await Project.findByIdAndDelete(_id);
-  if (!deletedProject) throw new Error("Project not found");
-
-  Task.deleteMany({ projectId: deletedProject._id });
-
-  return true;
+const projectDelete = async (_, { _id }) => {
+  try {
+    const deletedProject = await Project.findByIdAndDelete(_id);
+    if (!deletedProject) throw new Error("Project not found");
+  
+    Task.deleteMany({ projectId: deletedProject._id });
+  
+    return true;
+  } catch (error) {
+    return error
+  }
 };
 
-const updateProject = async (_, { input }) => {
+const projectUpdate = async (_, { input }) => {
   try {
     const { _id, name, description } = input;
     const update = {};
@@ -44,7 +51,6 @@ const updateProject = async (_, { input }) => {
     if (!updatedProject) throw new Error("Project not found");
     return updatedProject;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -59,9 +65,9 @@ export const projectResolvers = {
     },
 
     Mutation: {
-        createProject,
-        deleteProject,
-        updateProject
+        projectCreate,
+        projectDelete,
+        projectUpdate
     },
     Project: {
         tasks: tasksType

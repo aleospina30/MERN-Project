@@ -6,9 +6,9 @@ export const taskTypeDefs = gql`
     }
 
     type Mutation {
-    createTask(input: Task_input): Task
-    deleteTask(_id: ID!): Boolean
-    updateTask(input: Task_input):Task 
+    taskCreate(input: Task_input): Task
+    taskDelete(_id: ID!): Boolean
+    taskUpdate(input: Task_input):Task 
     }
 
     type Task {

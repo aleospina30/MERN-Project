@@ -8,11 +8,12 @@ const task = async (_, { _id }) => {
   else {throw new Error('No encuentro una monda')}
   return await Task.find(query);
   } catch (error){
-    console.error(error)
+    return error
   }
 };
 
-const createTask = async (_, { input }) => {
+const taskCreate = async (_, { input }) => {
+try {
   const { title, projectId } = input;
   const projectFound = await Project.findById(projectId);
   if (!projectFound) throw new Error("Project not found");
@@ -23,15 +24,22 @@ const createTask = async (_, { input }) => {
   });
   const taskSaved = await task.save();
   return taskSaved;
+} catch (error) {
+  return error
+}
 };
 
-const deleteTask = async (_, { _id }) => {
+const taskDelete = async (_, { _id }) => {
+  try {
   const deletedTask = await Task.findByIdAndDelete(_id);
   if (!deletedTask) throw new Error("Task not found");
   return true;
+  } catch (error) {
+    return error
+  }
 };
 
-const updateTask = async (_, { input }) => {
+const taskUpdate = async (_, { input }) => {
   try {
     const { _id, title, projectId, comment } = input;
     if(!_id)throw new Error("Id is required")
@@ -45,7 +53,6 @@ const updateTask = async (_, { input }) => {
     if (!updatedTask) throw new Error("Task not found");
     return updatedTask;
   } catch (error) {
-    console.error(error);
     return error;
   }
 };
@@ -57,9 +64,9 @@ export const taskResolvers = {
     task,
   },
   Mutation: {
-    createTask,
-    deleteTask,
-    updateTask,
+    taskCreate,
+    taskDelete,
+    taskUpdate,
   },
   Task: {
     project: projectType,
