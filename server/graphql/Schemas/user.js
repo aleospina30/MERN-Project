@@ -7,6 +7,8 @@ export const userTypeDefs = gql`
 
   type Mutation {
     userCreate(input: User_input): User
+    userUpdate(input: User_input): User
+    userDelete(_id: String!): Boolean
   }
 
   type User {
@@ -15,6 +17,7 @@ export const userTypeDefs = gql`
     docIdentity: String
     username: String
     email: String
+    deletedAt: Int
   }
 
   input User_input {
