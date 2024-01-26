@@ -18,6 +18,7 @@ export const userTypeDefs = gql`
     username: String
     email: String
     deletedAt: Int
+    projects: [Project]
   }
 
   input User_input {

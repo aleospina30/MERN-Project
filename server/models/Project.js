@@ -1,28 +1,35 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from "uuid";
 
-const ProjectSchema = new mongoose.Schema({
+const ProjectSchema = new mongoose.Schema(
+  {
     _id: {
-        type: String,
-        default: uuidv4
+      type: String,
+      default: uuidv4,
+    },
+    userId: {
+      type: String,
+      required: true,
     },
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     description: {
-        type: String 
+      type: String,
     },
     isRemove: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     deletedAt: {
-        type: Number
-    }
-}, {
+      type: Number,
+    },
+  },
+  {
     timestamps: true,
-    _id: false
-});
+    _id: false,
+  }
+);
 
-export default mongoose.model('Project', ProjectSchema)
+export default mongoose.model("Project", ProjectSchema);

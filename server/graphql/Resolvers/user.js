@@ -1,3 +1,4 @@
+import Project from "../../models/Project.js";
 import User from "../../models/User.js";
 
 const user = async (_, { filter = {} }) => {
@@ -50,19 +51,24 @@ const userUpdate = async (_, { input }) => {
   }
 };
 
+
 const userDelete = async (_, { _id }) => {
   try {
     const deletedAt = new Date().getTime();
-    const deleteUser = await User.findByIdAndUpdate(_id, {
+    const deleteUpdate = {
       isRemove: true,
       deletedAt,
-    });
-    if (!deleteUser) throw new Error("User not found");
+    }
+    const deletedUser = await User.findByIdAndUpdate(_id, deleteUpdate);
+    if (!deletedUser) throw new Error("User not found");
+    Project.updateMany({ userId: _id }, deleteUpdate);
     return true;
   } catch (error) {
     return error;
   }
 };
+
+const projectType = async (parent) => await Project.find({ userId: parent._id, isRemove: false });
 
 export const userResolvers = {
   Query: {
@@ -74,4 +80,7 @@ export const userResolvers = {
     userUpdate,
     userDelete,
   },
+  User: {
+    projects: projectType
+  }
 };

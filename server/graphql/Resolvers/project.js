@@ -1,29 +1,30 @@
 import Project from "../../models/Project.js";
 import Task from "../../models/Task.js";
-
+import User from "../../models/User.js";
 
 const project = async (_, { _id }) => {
   try {
-    const query = {};
-  if (_id) query._id = _id;
-  return await Project.find(query);
+    const query = {isRemove: false};
+    if (_id) query._id = _id;
+    return await Project.find(query);
   } catch (error) {
-    return error
+    return error;
   }
 };
 
 const projectCreate = async (_, { input }) => {
- try {
-  const { name, description } = input;
-  const project = new Project({
-    name,
-    description,
-  });
-  const savedProject = await project.save();
-  return savedProject;
- } catch (error) {
-  return error
- }
+  try {
+    const { name, description, userId } = input;
+    const project = new Project({
+      userId,
+      name,
+      description,
+    });
+    const savedProject = await project.save();
+    return savedProject;
+  } catch (error) {
+    return error;
+  }
 };
 
 const projectDelete = async (_, { _id }) => {
@@ -37,7 +38,7 @@ const projectDelete = async (_, { _id }) => {
     Task.updateMany({ projectId: deletedProject._id });
     return true;
   } catch (error) {
-    return error
+    return error;
   }
 };
 
@@ -58,20 +59,20 @@ const projectUpdate = async (_, { input }) => {
 };
 
 const tasksType = async (parent) => await Task.find({ projectId: parent._id });
-
-
+const userType = async (parent) => await User.findOne({_id: parent.userId})
 
 export const projectResolvers = {
-    Query: {
-        project
-    },
+  Query: {
+    project,
+  },
 
-    Mutation: {
-        projectCreate,
-        projectDelete,
-        projectUpdate
-    },
-    Project: {
-        tasks: tasksType
-    }
-}
+  Mutation: {
+    projectCreate,
+    projectDelete,
+    projectUpdate,
+  },
+  Project: {
+    tasks: tasksType,
+    user: userType
+  },
+};

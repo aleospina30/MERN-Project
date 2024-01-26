@@ -13,6 +13,7 @@ export const projectTypeDefs = gql`
   type Project {
     _id: ID
     name: String
+    user: User
     description: String
     createdAt: String
     updatedAt: String
@@ -22,6 +23,7 @@ export const projectTypeDefs = gql`
 
   input Project_input {
     _id: String
+    userId: String
     name: String
     description: String
   }
