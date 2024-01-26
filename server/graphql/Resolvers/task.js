@@ -31,7 +31,11 @@ try {
 
 const taskDelete = async (_, { _id }) => {
   try {
-  const deletedTask = await Task.findByIdAndDelete(_id);
+  const deletedAt = new Date().getTime();
+  const deletedTask = await Task.findByIdAndUpdate(_id, {
+    isRemove: true,
+    deletedAt,
+  });
   if (!deletedTask) throw new Error("Task not found");
   return true;
   } catch (error) {

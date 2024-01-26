@@ -12,6 +12,13 @@ const ProjectSchema = new mongoose.Schema({
     },
     description: {
         type: String 
+    },
+    isRemove: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: {
+        type: Number
     }
 }, {
     timestamps: true,

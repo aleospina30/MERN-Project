@@ -18,7 +18,14 @@ const taskSchema = new mongoose.Schema({
     comments: {
         type: Array,
         default: []
-    }
+    },
+    isRemove: {
+        type: Boolean,
+        default: false
+    }, 
+    deletedAt: {
+        type: Number
+    },
 }, {
     timestamps: true,
     _id: false,

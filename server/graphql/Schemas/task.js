@@ -18,6 +18,7 @@ export const taskTypeDefs = gql`
     comments: [String]
     createdAt: String
     updatedAt: String
+    deletedAt: Int
   }
 
   input Task_input{

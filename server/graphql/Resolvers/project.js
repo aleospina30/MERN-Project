@@ -28,11 +28,13 @@ const projectCreate = async (_, { input }) => {
 
 const projectDelete = async (_, { _id }) => {
   try {
-    const deletedProject = await Project.findByIdAndDelete(_id);
+    const deletedAt = new Date().getTime();
+    const deletedProject = await Project.findByIdAndUpdate(_id, {
+      isRemove: true,
+      deletedAt,
+    });
     if (!deletedProject) throw new Error("Project not found");
-  
-    Task.deleteMany({ projectId: deletedProject._id });
-  
+    Task.updateMany({ projectId: deletedProject._id });
     return true;
   } catch (error) {
     return error
