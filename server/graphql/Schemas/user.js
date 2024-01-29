@@ -3,6 +3,7 @@ import { gql } from "graphql-tag";
 export const userTypeDefs = gql`
   type Query {
     user(filter: User_filter): [User]
+    login(input: Login_input!): [User]
   }
 
   type Mutation {
@@ -33,5 +34,10 @@ export const userTypeDefs = gql`
   input User_filter{
     _id: String
     docIdentity: String
+  }
+
+  input Login_input{
+    email:String!
+    password: String!
   }
 `;

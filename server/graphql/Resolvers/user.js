@@ -68,11 +68,25 @@ const userDelete = async (_, { _id }) => {
   }
 };
 
-const projectType = async (parent) => await Project.find({ userId: parent._id, isRemove: false });
+const login = async (_, {input}) => {
+  try {
+    const {email, password} = input;
+    const query = {email, password};
+    const LoginFind = await User.find(query)
+    if(!LoginFind.length) throw new Error("Email o contraseña incorrecta")
+    return LoginFind
+  } catch (error) {
+    return error
+  }
+}
+
+const projectType = async (parent) => await Project.find({ userId: parent._id, 
+  isRemove: false });
 
 export const userResolvers = {
   Query: {
     user,
+    login,
   },
 
   Mutation: {
