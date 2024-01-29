@@ -14,10 +14,11 @@ const task = async (_, { _id }) => {
 const task_create = async (_, { input }) => {
   try {
     const { title, projectId } = input;
-    const projectFound = await Project.findById(projectId);
+    const projectFound = await Project.findOne({projectId});
     if (!projectFound) throw new Error("Project not found");
     const task = new Task({
       title,
+      description, 
       projectId,
     });
     return await task.save();
@@ -28,8 +29,8 @@ const task_create = async (_, { input }) => {
 
 const task_delete = async (_, { _id }) => {
   try {
-    const deletedAt = new Date().getTime();
-    const deletedTask = await Task.findByIdAndUpdate(_id, {
+    const deletedAt = new Date().getTime(); 
+    await Task.findOneAndUpdate({_id}, {
       isRemove: true,
       deletedAt,
     });
@@ -41,15 +42,16 @@ const task_delete = async (_, { _id }) => {
 
 const task_update = async (_, { input }) => {
   try {
-    const { _id, title, comment } = input;
+    const { _id, title,description, comment } = input;
     if (!_id) throw new Error("Id is required");
     const update = {
       $set: {
         title,
+        description,
       }
     };
     if (comment) update.$push = { comments: comment };
-    return await Task.findByIdAndUpdate(_id, update, {
+    return await Task.findOneAndUpdate({_id}, update, {
       new: true,
     });
   } catch (error) {

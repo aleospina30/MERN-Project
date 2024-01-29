@@ -58,11 +58,12 @@ const user_update = async (_, { input = {} }) => {
 
 const user_save = async (_, {input = {}}) => {
   try {
-    if(input._id) {
-      return await user_update(_, { input })
-    } else {
-      return await user_create(_, { input })
+    const option = input._id ? 'update' : 'create'
+    const options = {
+      create: user_create,
+      update: user_update
     }
+    return await options[option](_, { input })
   } catch(e) {
     return e
   }

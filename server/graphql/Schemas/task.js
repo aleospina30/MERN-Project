@@ -14,6 +14,7 @@ export const taskTypeDefs = gql`
     type Task {
     _id: ID
     title: String
+    description: String
     project: Project
     comments: [String]
     createdAt: String
@@ -24,6 +25,7 @@ export const taskTypeDefs = gql`
   input Task_input{
     _id: String
     title: String
+    description: String
     projectId: String
     comment: String
   }
