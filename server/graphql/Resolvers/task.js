@@ -5,16 +5,13 @@ const task = async (_, { _id }) => {
   try {
     const query = {};
     if (_id) query._id = _id;
-    else {
-      throw new Error("No encuentro una monda");
-    }
     return await Task.find(query);
   } catch (error) {
     return error;
   }
 };
 
-const taskCreate = async (_, { input }) => {
+const task_create = async (_, { input }) => {
   try {
     const { title, projectId } = input;
     const projectFound = await Project.findById(projectId);
@@ -23,39 +20,38 @@ const taskCreate = async (_, { input }) => {
       title,
       projectId,
     });
-    const taskSaved = await task.save();
-    return taskSaved;
+    return await task.save();
   } catch (error) {
     return error;
   }
 };
 
-const taskDelete = async (_, { _id }) => {
+const task_delete = async (_, { _id }) => {
   try {
     const deletedAt = new Date().getTime();
     const deletedTask = await Task.findByIdAndUpdate(_id, {
       isRemove: true,
       deletedAt,
     });
-    if (!deletedTask) throw new Error("Task not found");
     return true;
   } catch (error) {
     return error;
   }
 };
 
-const taskUpdate = async (_, { input }) => {
+const task_update = async (_, { input }) => {
   try {
     const { _id, title, comment } = input;
     if (!_id) throw new Error("Id is required");
-    const update = {};
-    if (title) update.title = title;
+    const update = {
+      $set: {
+        title,
+      }
+    };
     if (comment) update.$push = { comments: comment };
-    const updatedTask = await Task.findByIdAndUpdate(_id, update, {
+    return await Task.findByIdAndUpdate(_id, update, {
       new: true,
     });
-    if (!updatedTask) throw new Error("Task not found");
-    return updatedTask;
   } catch (error) {
     return error;
   }
@@ -68,9 +64,9 @@ export const taskResolvers = {
     task,
   },
   Mutation: {
-    taskCreate,
-    taskDelete,
-    taskUpdate,
+    task_create,
+    task_delete,
+    task_update,
   },
   Task: {
     project: projectType,

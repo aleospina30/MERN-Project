@@ -5,9 +5,9 @@ export const projectTypeDefs = gql`
     project(_id: ID): [Project]
   }
   type Mutation {
-    projectCreate(input: Project_input): Project
-    projectDelete(_id: String!): Boolean
-    projectUpdate(input: Project_input): Project
+    project_create(input: Project_input): Project
+    project_delete(_id: String!): Boolean
+    project_update(input: Project_input): Project
   }
 
   type Project {

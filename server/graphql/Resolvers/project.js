@@ -12,7 +12,7 @@ const project = async (_, { _id }) => {
   }
 };
 
-const projectCreate = async (_, { input }) => {
+const project_create = async (_, { input }) => {
   try {
     const { name, description, userId } = input;
     const project = new Project({
@@ -20,14 +20,13 @@ const projectCreate = async (_, { input }) => {
       name,
       description,
     });
-    const savedProject = await project.save();
-    return savedProject;
+    return await project.save();
   } catch (error) {
     return error;
   }
 };
 
-const projectDelete = async (_, { _id }) => {
+const project_delete = async (_, { _id }) => {
   try {
     const deletedAt = new Date().getTime();
     const deletedProject = await Project.findByIdAndUpdate(_id, {
@@ -42,17 +41,18 @@ const projectDelete = async (_, { _id }) => {
   }
 };
 
-const projectUpdate = async (_, { input }) => {
+const project_update = async (_, { input }) => {
   try {
     const { _id, name, description } = input;
-    const update = {};
-    if (name) update.name = name;
-    if (description) update.description = description;
-    const updatedProject = await Project.findByIdAndUpdate(_id, update, {
+    const update = {
+      $set: {
+        name,
+        description,
+      }
+    };
+    return await Project.findByIdAndUpdate(_id, update, {
       new: true,
     });
-    if (!updatedProject) throw new Error("Project not found");
-    return updatedProject;
   } catch (error) {
     return error;
   }
@@ -67,9 +67,9 @@ export const projectResolvers = {
   },
 
   Mutation: {
-    projectCreate,
-    projectDelete,
-    projectUpdate,
+    project_create,
+    project_delete,
+    project_update,
   },
   Project: {
     tasks: tasksType,

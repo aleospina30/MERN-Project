@@ -17,6 +17,7 @@ const ProjectSchema = new mongoose.Schema(
     },
     description: {
       type: String,
+      default: ''
     },
     isRemove: {
       type: Boolean,
@@ -24,11 +25,13 @@ const ProjectSchema = new mongoose.Schema(
     },
     deletedAt: {
       type: Number,
+      default: ''
     },
   },
   {
     timestamps: true,
     _id: false,
+    versionKey: false,
   }
 );
 

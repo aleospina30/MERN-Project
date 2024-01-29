@@ -11,6 +11,7 @@ const taskSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    
     projectId:{
         type: String,
         required: true
@@ -24,11 +25,13 @@ const taskSchema = new mongoose.Schema({
         default: false
     }, 
     deletedAt: {
-        type: Number
+        type: Number,
+        default: ''
     },
 }, {
     timestamps: true,
     _id: false,
+    versionKey: false,
 });
 
 export default mongoose.model('Task', taskSchema);

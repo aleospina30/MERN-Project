@@ -3,19 +3,20 @@ import User from "../../models/User.js";
 
 const user = async (_, { filter = {} }) => {
   try {
-    const { _id, docIdentity } = filter;
     const query = { isRemove: false };
+
+    const { _id, docIdentity } = filter;
     if (_id) query._id = _id;
     if (docIdentity) query.docIdentity = docIdentity;
-    const usersFound = await User.find(query);
-    if (!usersFound.length) throw new Error("NO ENCONTRÉ UNA MONDA");
-    return usersFound;
+
+    // cambiar esta consulta a un aggregate y incluir el lookup para incluir un array de projects
+    return await User.find(query);
   } catch (error) {
     return error;
   }
 };
 
-const userCreate = async (_, { input }) => {
+const user_create = async (_, { input }) => {
   try {
     const { name, username, docIdentity, email, password } = input;
     const user = new User({
@@ -25,43 +26,59 @@ const userCreate = async (_, { input }) => {
       email,
       password,
     });
-    const userSaved = await user.save();
-    return userSaved;
+    return await user.save();
   } catch (error) {
     return error;
   }
 };
 
-const userUpdate = async (_, { input }) => {
+const user_update = async (_, { input = {} }) => {
   try {
-    const { _id, name, username, docIdentity, email, password } = input;
-    const update = {};
-    if (name) update.name = name;
-    if (username) update.username = username;
-    if (docIdentity) update.docIdentity = docIdentity;
-    if (email) update.email = email;
-    if (password) update.password = password;
+    const { _id, name, lastname, username, docIdentity, email, password } = input;
+    
+    const update = {
+      $set: {
+        name,
+        lastname,
+        username,
+        docIdentity,
+        email,
+        password
+      }
+    };
+
     const updateUser = await User.findByIdAndUpdate(_id, update, {
       new: true,
     });
-    if (!updateUser) throw new Error("User not found");
     return updateUser;
   } catch (error) {
     return error;
   }
 };
 
+const user_save = async (_, {input = {}}) => {
+  try {
+    if(input._id) {
+      return await user_update(_, { input })
+    } else {
+      return await user_create(_, { input })
+    }
+  } catch(e) {
+    return e
+  }
+}
 
-const userDelete = async (_, { _id }) => {
+const user_delete = async (_, { _id }) => {
   try {
     const deletedAt = new Date().getTime();
     const deleteUpdate = {
       isRemove: true,
       deletedAt,
     }
-    const deletedUser = await User.findByIdAndUpdate(_id, deleteUpdate);
+    const deletedUser = await User.findOneAndUpdate({_id, isRemove: false}, deleteUpdate);
     if (!deletedUser) throw new Error("User not found");
-    Project.updateMany({ userId: _id }, deleteUpdate);
+
+    await Project.updateMany({ isRemove: false, userId: _id }, deleteUpdate);
     return true;
   } catch (error) {
     return error;
@@ -71,9 +88,12 @@ const userDelete = async (_, { _id }) => {
 const login = async (_, {input}) => {
   try {
     const {email, password} = input;
-    const query = {email, password};
-    const LoginFind = await User.find(query)
-    if(!LoginFind.length) throw new Error("Email o contraseña incorrecta")
+    if(!email || email.trim() === '') throw new Error('Email is required')
+    if(!password || password.trim() === '') throw new Error('Password is required')
+    
+    const LoginFind = await User.findOne({email, password}).lean()
+    if(!LoginFind) throw new Error("Email o contraseña incorrecta")
+
     return LoginFind
   } catch (error) {
     return error
@@ -90,9 +110,8 @@ export const userResolvers = {
   },
 
   Mutation: {
-    userCreate,
-    userUpdate,
-    userDelete,
+    user_save,
+    user_delete,
   },
   User: {
     projects: projectType
