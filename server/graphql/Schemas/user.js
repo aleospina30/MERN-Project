@@ -3,18 +3,17 @@ import { gql } from "graphql-tag";
 export const userTypeDefs = gql`
   type Query {
     user(filter: User_filter): [User]
-    login(input: Login_input!): User
+    login(input: Login_input!): String
   }
 
   type Mutation {
     user_save(input: User_input): User
     user_delete(_id: String!): Boolean
   }
-
+ 
   type User {
     _id: ID
     name: String
-    lastname: String
     docIdentity: String
     username: String
     email: String

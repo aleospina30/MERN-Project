@@ -1,12 +1,27 @@
 import Project from "../../models/Project.js";
 import Task from "../../models/Task.js";
-import User from "../../models/User.js";
+
 
 const project = async (_, { _id }) => {
   try {
     const query = {isRemove: false};
     if (_id) query._id = _id;
-    return await Project.find(query);
+    const aggregate = Project.aggregate()
+    .match(query)
+    .lookup({
+      from: 'tasks',
+      localField: '_id',
+      foreignField: 'projectId',
+      as: 'tasks'
+    })
+    .lookup({
+      from: 'users',
+      localField: 'userId',
+      foreignField: '_id',
+      as: 'user'
+    })
+    .unwind('user')
+    return await aggregate
   } catch (error) {
     return error;
   }
@@ -70,22 +85,15 @@ const project_delete = async (_, { _id }) => {
   }
 };
 
-
-const tasksType = async (parent) => await Task.find({ projectId: parent._id });
-const userType = async (parent) => await User.findOne({_id: parent.userId})
-
 export const projectResolvers = {
   Query: {
     project,
   },
 
   Mutation: {
-    project_create,
+    project_save,
     project_delete,
-    project_update,
   },
   Project: {
-    tasks: tasksType,
-    user: userType
   },
 };

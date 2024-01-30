@@ -1,5 +1,7 @@
+import jwt from "jsonwebtoken";
 import Project from "../../models/Project.js";
 import User from "../../models/User.js";
+
 
 const user = async (_, { filter = {} }) => {
   try {
@@ -8,9 +10,17 @@ const user = async (_, { filter = {} }) => {
     const { _id, docIdentity } = filter;
     if (_id) query._id = _id;
     if (docIdentity) query.docIdentity = docIdentity;
+    
+    const user = User.aggregate()
+    .match(query)
+    .lookup({
+      from:'projects',
+      localField: '_id',
+      foreignField: 'userId',
+      as: 'projects'
+    })
 
-    // cambiar esta consulta a un aggregate y incluir el lookup para incluir un array de projects
-    return await User.find(query);
+    return await user;
   } catch (error) {
     return error;
   }
@@ -96,15 +106,15 @@ const login = async (_, {input}) => {
     
     const LoginFind = await User.findOne({email, password}).lean()
     if(!LoginFind) throw new Error("Email o contraseña incorrecta")
-
-    return LoginFind
+    const sessionToken = jwt.sign(LoginFind, process.env.SECRET_KEY_LOGIN, {
+      expiresIn: "1d",
+    });
+    console.log("EL TOKEN ES: ", sessionToken)
+    return sessionToken
   } catch (error) {
     return error
   }
 }
-
-const projectType = async (parent) => await Project.find({ userId: parent._id, 
-  isRemove: false });
 
 export const userResolvers = {
   Query: {
@@ -117,6 +127,6 @@ export const userResolvers = {
     user_delete,
   },
   User: {
-    projects: projectType
+    
   }
 };

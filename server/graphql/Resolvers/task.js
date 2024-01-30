@@ -1,11 +1,20 @@
 import Task from "../../models/Task.js";
 import Project from "../../models/Project.js";
 
-const task = async (_, { _id }) => {
+const task = async (_, { filter = {} }) => {
   try {
-    const query = {};
+    const { _id, status } = filter
+    const query = {isRemove: false};
     if (_id) query._id = _id;
-    return await Task.find(query);
+    if (status) query.status = status;
+    const aggregate = Task.aggregate()
+    .match(query)
+    .lookup({
+      from: 'projects',
+      localField: '_id',
+      foreignField: 'projectId'
+    })
+    return await aggregate;
   } catch (error) {
     return error;
   }
@@ -13,8 +22,8 @@ const task = async (_, { _id }) => {
 
 const task_create = async (_, { input }) => {
   try {
-    const { title, projectId } = input;
-    const projectFound = await Project.findOne({ projectId });
+    const { title,description, projectId } = input;
+    const projectFound = await Project.findOne({ _id:projectId });
     if (!projectFound) throw new Error("Project not found");
     const task = new Task({
       title,
@@ -29,10 +38,11 @@ const task_create = async (_, { input }) => {
 
 const task_update = async (_, { input }) => {
   try {
-    const { _id, title, description, comment } = input;
+    const { _id, title, description, status, comment } = input;
     if (!_id) throw new Error("Id is required");
     const update = {
       $set: {
+        status,
         title,
         description,
       },
@@ -74,7 +84,7 @@ const task_delete = async (_, { _id }) => {
     return error;
   }
 };
-const projectType = async (parent) => await Project.findById(parent.projectId);
+
 
 export const taskResolvers = {
   Query: {
@@ -85,6 +95,5 @@ export const taskResolvers = {
     task_delete,
   },
   Task: {
-    project: projectType,
   },
 };

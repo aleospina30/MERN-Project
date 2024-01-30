@@ -23,6 +23,11 @@ const taskSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
+    status: {
+        type: String,
+        enum: ['PENDING', 'IN_PROCESS', 'COMPLETED' ],
+        default: 'PENDING',
+    },
     isRemove: {
         type: Boolean,
         default: false
