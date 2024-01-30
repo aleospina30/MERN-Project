@@ -19,6 +19,8 @@ const user = async (_, { filter = {} }) => {
 const user_create = async (_, { input }) => {
   try {
     const { name, username, docIdentity, email, password } = input;
+    if(!email || email.trim() === '') throw new Error('Email is required')
+    if(!password || password.trim() === '') throw new Error('Password is required')
     const user = new User({
       name,
       username,

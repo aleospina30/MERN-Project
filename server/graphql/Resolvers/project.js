@@ -25,11 +25,40 @@ const project_create = async (_, { input }) => {
     return error;
   }
 };
+const project_update = async (_, { input }) => {
+  try {
+    const { _id, name, description } = input;
+    const update = {
+      $set: {
+        name,
+        description,
+      }
+    };
+    return await Project.findOneAndUpdate({_id}, update, {
+      new: true,
+    });
+  } catch (error) {
+    return error;
+  }
+};
+
+const project_save = async(_, {input = {} }) => {
+  try {
+    const option = input._id ? 'update' : 'create';
+    const options = {
+      create: project_create,
+      update: project_update
+    }
+    return await options[option](_, { input });
+  } catch (error) {
+    return error
+  }
+}
 
 const project_delete = async (_, { _id }) => {
   try {
     const deletedAt = new Date().getTime();
-    const deletedProject = await Project.findByIdAndUpdate(_id, {
+    const deletedProject = await Project.findOneAndUpdate({_id}, {
       isRemove: true,
       deletedAt,
     });
@@ -41,22 +70,6 @@ const project_delete = async (_, { _id }) => {
   }
 };
 
-const project_update = async (_, { input }) => {
-  try {
-    const { _id, name, description } = input;
-    const update = {
-      $set: {
-        name,
-        description,
-      }
-    };
-    return await Project.findByIdAndUpdate(_id, update, {
-      new: true,
-    });
-  } catch (error) {
-    return error;
-  }
-};
 
 const tasksType = async (parent) => await Task.find({ projectId: parent._id });
 const userType = async (parent) => await User.findOne({_id: parent.userId})
