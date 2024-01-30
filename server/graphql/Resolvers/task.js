@@ -1,20 +1,26 @@
 import Task from "../../models/Task.js";
 import Project from "../../models/Project.js";
 
+
+
 const task = async (_, { filter = {} }) => {
   try {
     const { _id, status } = filter
     const query = {isRemove: false};
     if (_id) query._id = _id;
     if (status) query.status = status;
+
     const aggregate = Task.aggregate()
     .match(query)
     .lookup({
       from: 'projects',
-      localField: '_id',
-      foreignField: 'projectId'
+      localField: 'projectId',
+      foreignField: '_id',
+      as: 'project'
     })
+    .unwind('project')
     return await aggregate;
+
   } catch (error) {
     return error;
   }
