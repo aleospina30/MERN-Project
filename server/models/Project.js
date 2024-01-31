@@ -25,7 +25,7 @@ const ProjectSchema = new mongoose.Schema(
     },
     deletedAt: {
       type: Number,
-      default: ''
+      default: null
     },
   },
   {

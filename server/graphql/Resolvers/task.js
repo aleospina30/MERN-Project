@@ -1,5 +1,4 @@
-import Task from "../../models/Task.js";
-import Project from "../../models/Project.js";
+import { projectModel, taskModel} from './../../models/index.js'
 
 
 
@@ -29,9 +28,9 @@ const task = async (_, { filter = {} }) => {
 const task_create = async (_, { input }) => {
   try {
     const { title,description, projectId } = input;
-    const projectFound = await Project.findOne({ _id:projectId });
+    const projectFound = await projectModel.findOne({ _id:projectId });
     if (!projectFound) throw new Error("Project not found");
-    const task = new Task({
+    const task = new taskModel({
       title,
       description,
       projectId,
@@ -54,7 +53,7 @@ const task_update = async (_, { input }) => {
       },
     };
     if (comment) update.$push = { comments: comment };
-    return await Task.findOneAndUpdate({ _id }, update, {
+    return await taskModel.findOneAndUpdate({ _id }, update, {
       new: true,
     });
   } catch (error) {
@@ -77,12 +76,11 @@ const task_save = async (_, { input = {} }) => {
 
 const task_delete = async (_, { _id }) => {
   try {
-    const deletedAt = new Date().getTime();
-    await Task.findOneAndUpdate(
+    await taskModel.findOneAndUpdate(
       { _id },
       {
         isRemove: true,
-        deletedAt,
+        deletedAt: new Date().getTime()
       }
     );
     return true;

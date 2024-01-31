@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const GET_PROJECTS = gql`
-query Project($id: ID) {
-  project(_id: $id) {
+export const GET_projectModelS = gql`
+query projectModel($id: ID) {
+  projectModel(_id: $id) {
     _id
     createdAt
     description

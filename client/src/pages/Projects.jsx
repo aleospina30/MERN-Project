@@ -1,15 +1,15 @@
-import { ProjectForm } from "../components/ProjectForm"
-import { ProjectList } from "../components/ProjectList"
+import { projectModelForm } from "../components/projectModelForm"
+import { projectModelList } from "../components/projectModelList"
 
-export function Projects(){
+export function projectModels(){
     return (
         <div>
 
-        <ProjectForm/>
-        <ProjectList/>
+        <projectModelForm/>
+        <projectModelList/>
             
         </div>
     )
 }
 
-export default Projects
+export default projectModels

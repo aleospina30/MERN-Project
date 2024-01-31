@@ -34,7 +34,7 @@ const taskSchema = new mongoose.Schema({
     }, 
     deletedAt: {
         type: Number,
-        default: ''
+        default: null
     },
 }, {
     timestamps: true,

@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
-import Project from "../../models/Project.js";
-import User from "../../models/User.js";
+import { projectModel, userModel } from './../../models/index.js'
 
 
 const user = async (_, { filter = {} }) => {
@@ -11,7 +10,7 @@ const user = async (_, { filter = {} }) => {
     if (_id) query._id = _id;
     if (docIdentity) query.docIdentity = docIdentity;
     
-    const user = User.aggregate()
+    const user = userModel.aggregate()
     .match(query)
     .lookup({
       from:'projects',
@@ -31,7 +30,7 @@ const user_create = async (_, { input }) => {
     const { name, username, docIdentity, email, password } = input;
     if(!email || email.trim() === '') throw new Error('Email is required')
     if(!password || password.trim() === '') throw new Error('Password is required')
-    const user = new User({
+    const user = new userModel({
       name,
       username,
       docIdentity,
@@ -59,10 +58,9 @@ const user_update = async (_, { input = {} }) => {
       }
     };
 
-    const updateUser = await User.findByIdAndUpdate(_id, update, {
+    return await userModel.findByIdAndUpdate(_id, update, {
       new: true,
     });
-    return updateUser;
   } catch (error) {
     return error;
   }
@@ -83,15 +81,14 @@ const user_save = async (_, {input = {}}) => {
 
 const user_delete = async (_, { _id }) => {
   try {
-    const deletedAt = new Date().getTime();
     const deleteUpdate = {
       isRemove: true,
-      deletedAt,
+      deletedAt: new Date().getTime(),
     }
-    const deletedUser = await User.findOneAndUpdate({_id, isRemove: false}, deleteUpdate);
+    const deletedUser = await userModel.findOneAndUpdate({_id, isRemove: false}, deleteUpdate);
     if (!deletedUser) throw new Error("User not found");
 
-    await Project.updateMany({ isRemove: false, userId: _id }, deleteUpdate);
+    await projectModel.updateMany({ isRemove: false, userId: _id }, deleteUpdate);
     return true;
   } catch (error) {
     return error;
@@ -104,7 +101,7 @@ const login = async (_, {input}) => {
     if(!email || email.trim() === '') throw new Error('Email is required')
     if(!password || password.trim() === '') throw new Error('Password is required')
     
-    const LoginFind = await User.findOne({email, password}).lean()
+    const LoginFind = await userModel.findOne({email, password}).lean()
     if(!LoginFind) throw new Error("Email o contraseña incorrecta")
     const sessionToken = jwt.sign(LoginFind, process.env.SECRET_KEY_LOGIN, {
       expiresIn: "1d",

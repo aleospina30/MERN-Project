@@ -1,12 +1,11 @@
-import Project from "../../models/Project.js";
-import Task from "../../models/Task.js";
+import { projectModel, taskModel } from './../../models/index.js'
 
 
 const project = async (_, { _id }) => {
   try {
     const query = {isRemove: false};
     if (_id) query._id = _id;
-    const aggregate = Project.aggregate()
+    const aggregate = projectModel.aggregate()
     .match(query)
     .lookup({
       from: 'tasks',
@@ -30,7 +29,7 @@ const project = async (_, { _id }) => {
 const project_create = async (_, { input }) => {
   try {
     const { name, description, userId } = input;
-    const project = new Project({
+    const project = new projectModel({
       userId,
       name,
       description,
@@ -49,7 +48,7 @@ const project_update = async (_, { input }) => {
         description,
       }
     };
-    return await Project.findOneAndUpdate({_id}, update, {
+    return await projectModel.findOneAndUpdate({_id}, update, {
       new: true,
     });
   } catch (error) {
@@ -73,12 +72,13 @@ const project_save = async(_, {input = {} }) => {
 const project_delete = async (_, { _id }) => {
   try {
     const deletedAt = new Date().getTime();
-    const deletedProject = await Project.findOneAndUpdate({_id}, {
+    const deletedProject = await projectModel.findOneAndUpdate({_id}, {
       isRemove: true,
       deletedAt,
     });
     if (!deletedProject) throw new Error("Project not found");
-    Task.updateMany({ projectId: deletedProject._id });
+    taskModel.updateMany({ projectId: deletedProject._id }, {
+      $set: {isRemove: true} });
     return true;
   } catch (error) {
     return error;

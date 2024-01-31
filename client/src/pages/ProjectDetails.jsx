@@ -1,5 +1,5 @@
-export function ProjectDetails(){
+export function projectModelDetails(){
     return (
-        <div>ProjectDetails</div>
+        <div>projectModelDetails</div>
     )
 }

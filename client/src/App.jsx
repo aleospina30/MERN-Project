@@ -1,7 +1,7 @@
 import {ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import {Projects} from './pages/Projects';
-import { ProjectDetails }   from './pages/ProjectDetails'
+import {projectModels} from './pages/projectModels';
+import { projectModelDetails }   from './pages/projectModelDetails'
  
 
 const client = new ApolloClient({
@@ -14,9 +14,9 @@ function App() {
     <ApolloProvider client={client}>
       <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Navigate to="/projects"/>}/>
-        <Route path='/projects' element={<Projects/>}/>
-        <Route path='/projects/:id' element={<ProjectDetails/>}/>
+        <Route path='/' element={<Navigate to="/projectModels"/>}/>
+        <Route path='/projectModels' element={<projectModels/>}/>
+        <Route path='/projectModels/:id' element={<projectModelDetails/>}/>
       </Routes>
       </BrowserRouter>
     </ApolloProvider>

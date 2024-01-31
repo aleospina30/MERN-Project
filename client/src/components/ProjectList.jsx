@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client'
-import { GET_PROJECTS } from '../graphql/projects'
+import { GET_projectModelS } from '../graphql/projectModels'
 
-export function ProjectList() {
+export function projectModelList() {
 
-    const {loading, error, data} = useQuery(GET_PROJECTS);
+    const {loading, error, data} = useQuery(GET_projectModelS);
 
     if(loading) return <p>LOADING</p>
     if(error) return <p>Error</p>
