@@ -7,8 +7,8 @@ export const userTypeDefs = gql`
   }
 
   type Mutation {
-    user_save(input: User_input): User
-    user_delete(_id: String!): Boolean
+    User_save(input: User_input): User
+    User_delete(_id: String!): Boolean
   }
  
   type User {

@@ -6,8 +6,9 @@ export const taskTypeDefs = gql`
   }
 
   type Mutation {
-    task_save(input: Task_input): Task
-    task_delete(_id: ID!): Boolean
+    Task_save(input: Task_input): Task
+    Task_delete(_id: ID!): Boolean
+    Task_comment(taskId: String!,body: String!): Comment
   }
 
   type Task {
@@ -15,12 +16,18 @@ export const taskTypeDefs = gql`
     title: String
     description: String
     project: Project
-    comments: [String]
+    comments: [Comment]
     status: Statuses
     createdAt: String
     updatedAt: String
     deletedAt: Int
   }
+
+  type Comment {
+    _id: String
+    body: String
+  }
+
 
   input Task_filter {
     _id: ID
@@ -33,7 +40,6 @@ export const taskTypeDefs = gql`
     description: String
     projectId: String
     status: Statuses
-    comment: String
   }
 
   enum Statuses {
@@ -41,4 +47,5 @@ export const taskTypeDefs = gql`
     IN_PROCESS
     COMPLETED
   }
+
 `;

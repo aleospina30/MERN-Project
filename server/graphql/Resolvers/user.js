@@ -25,7 +25,7 @@ const user = async (_, { filter = {} }) => {
   }
 };
 
-const user_create = async (_, { input }) => {
+const User_create = async (_, { input }) => {
   try {
     const { name, username, docIdentity, email, password } = input;
     if(!email || email.trim() === '') throw new Error('Email is required')
@@ -43,7 +43,7 @@ const user_create = async (_, { input }) => {
   }
 };
 
-const user_update = async (_, { input = {} }) => {
+const User_update = async (_, { input = {} }) => {
   try {
     const { _id, name, lastname, username, docIdentity, email, password } = input;
     
@@ -66,12 +66,12 @@ const user_update = async (_, { input = {} }) => {
   }
 };
 
-const user_save = async (_, {input = {}}) => {
+const User_save = async (_, {input = {}}) => {
   try {
     const option = input._id ? 'update' : 'create'
     const options = {
-      create: user_create,
-      update: user_update
+      create: User_create,
+      update: User_update
     }
     return await options[option](_, { input })
   } catch(e) {
@@ -79,7 +79,7 @@ const user_save = async (_, {input = {}}) => {
   }
 }
 
-const user_delete = async (_, { _id }) => {
+const User_delete = async (_, { _id }) => {
   try {
     const deleteUpdate = {
       isRemove: true,
@@ -120,8 +120,8 @@ export const userResolvers = {
   },
 
   Mutation: {
-    user_save,
-    user_delete,
+    User_save,
+    User_delete,
   },
   User: {
     

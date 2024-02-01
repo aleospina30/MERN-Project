@@ -1,5 +1,5 @@
 import { projectModel, taskModel} from './../../models/index.js'
-
+import { v4 as uuidv4 } from "uuid";
 
 
 const task = async (_, { filter = {} }) => {
@@ -9,7 +9,7 @@ const task = async (_, { filter = {} }) => {
     if (_id) query._id = _id;
     if (status) query.status = status;
 
-    const aggregate = Task.aggregate()
+    const aggregate = taskModel.aggregate()
     .match(query)
     .lookup({
       from: 'projects',
@@ -25,7 +25,7 @@ const task = async (_, { filter = {} }) => {
   }
 };
 
-const task_create = async (_, { input }) => {
+const Task_create = async (_, { input }) => {
   try {
     const { title,description, projectId } = input;
     const projectFound = await projectModel.findOne({ _id:projectId });
@@ -41,9 +41,9 @@ const task_create = async (_, { input }) => {
   }
 };
 
-const task_update = async (_, { input }) => {
+const Task_update = async (_, { input }) => {
   try {
-    const { _id, title, description, status, comment } = input;
+    const { _id, title, description, status } = input;
     if (!_id) throw new Error("Id is required");
     const update = {
       $set: {
@@ -52,7 +52,6 @@ const task_update = async (_, { input }) => {
         description,
       },
     };
-    if (comment) update.$push = { comments: comment };
     return await taskModel.findOneAndUpdate({ _id }, update, {
       new: true,
     });
@@ -61,12 +60,12 @@ const task_update = async (_, { input }) => {
   }
 };
 
-const task_save = async (_, { input = {} }) => {
+const Task_save = async (_, { input = {} }) => {
   try {
     const option = input._id ? "update" : "create";
     const options = {
-      create: task_create,
-      update: task_update,
+      create: Task_create,
+      update: Task_update,
     };
     return await options[option](_, { input });
   } catch (error) {
@@ -74,7 +73,7 @@ const task_save = async (_, { input = {} }) => {
   }
 };
 
-const task_delete = async (_, { _id }) => {
+const Task_delete = async (_, { _id }) => {
   try {
     await taskModel.findOneAndUpdate(
       { _id },
@@ -89,14 +88,31 @@ const task_delete = async (_, { _id }) => {
   }
 };
 
+const Task_comment = async (_, {taskId,body}) =>{
+  try {
+    const comment = {
+      _id: uuidv4(),
+      body,
+    }
+    const update = {
+      $push: {comments: comment}
+    }
+    await taskModel.findOneAndUpdate({_id: taskId}, update)
+    return comment
+  } catch (error) {
+    return error
+  }
+}
+
 
 export const taskResolvers = {
   Query: {
     task,
   },
   Mutation: {
-    task_save,
-    task_delete,
+    Task_save,
+    Task_delete,
+    Task_comment,
   },
   Task: {
   },

@@ -26,7 +26,7 @@ const project = async (_, { _id }) => {
   }
 };
 
-const project_create = async (_, { input }) => {
+const Project_create = async (_, { input }) => {
   try {
     const { name, description, userId } = input;
     const project = new projectModel({
@@ -39,7 +39,7 @@ const project_create = async (_, { input }) => {
     return error;
   }
 };
-const project_update = async (_, { input }) => {
+const Project_update = async (_, { input }) => {
   try {
     const { _id, name, description } = input;
     const update = {
@@ -56,12 +56,12 @@ const project_update = async (_, { input }) => {
   }
 };
 
-const project_save = async(_, {input = {} }) => {
+const Project_save = async(_, {input = {} }) => {
   try {
     const option = input._id ? 'update' : 'create';
     const options = {
-      create: project_create,
-      update: project_update
+      create: Project_create,
+      update: Project_update
     }
     return await options[option](_, { input });
   } catch (error) {
@@ -69,7 +69,7 @@ const project_save = async(_, {input = {} }) => {
   }
 }
 
-const project_delete = async (_, { _id }) => {
+const Project_delete = async (_, { _id }) => {
   try {
     const deletedAt = new Date().getTime();
     const deletedProject = await projectModel.findOneAndUpdate({_id}, {
@@ -91,8 +91,8 @@ export const projectResolvers = {
   },
 
   Mutation: {
-    project_save,
-    project_delete,
+    Project_save,
+    Project_delete,
   },
   Project: {
   },
