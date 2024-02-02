@@ -75,14 +75,14 @@ const Task_save = async (_, { input = {} }) => {
 
 const Task_delete = async (_, { _id }) => {
   try {
-    await taskModel.findOneAndUpdate(
+    const deletedTask = await taskModel.updateOne(
       { _id },
       {
         isRemove: true,
         deletedAt: new Date().getTime()
       }
     );
-    return true;
+    return !!deletedTask?.modifiedCount;;
   } catch (error) {
     return error;
   }

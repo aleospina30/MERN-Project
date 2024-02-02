@@ -72,14 +72,13 @@ const Project_save = async(_, {input = {} }) => {
 const Project_delete = async (_, { _id }) => {
   try {
     const deletedAt = new Date().getTime();
-    const deletedProject = await projectModel.findOneAndUpdate({_id}, {
+    const deletedProject = await projectModel.updateOne({_id}, {
       isRemove: true,
       deletedAt,
     });
-    if (!deletedProject) throw new Error("Project not found");
     taskModel.updateMany({ projectId: deletedProject._id }, {
       $set: {isRemove: true} });
-    return true;
+      return !!deletedProject?.modifiedCount;
   } catch (error) {
     return error;
   }
