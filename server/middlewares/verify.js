@@ -7,6 +7,6 @@ export const verifyToken = (token, secret) => {
     const session = jwt.verify(token, secret);
     return session
   } catch (error) {
-    console.log(error.message);
+    return error;
   }
 };
