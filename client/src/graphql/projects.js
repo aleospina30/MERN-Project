@@ -10,6 +10,24 @@ export const GET_PROJECTS = gql`
   }
 `;
 
+export const GET_PROJECT = gql`
+  query Projects($id: ID) {
+  projects(_id: $id) {
+    _id
+    name
+    description
+    createdAt
+    tasks {
+      _id
+      title
+      description
+      status
+      createdAt
+    }
+  }
+}
+`
+
 export const CREATE_PROJECT = gql`
   mutation Project_save($input: Project_input) {
     Project_save(input: $input) {

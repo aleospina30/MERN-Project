@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { CREATE_PROJECT } from "../graphql/projects";
+import { CREATE_PROJECT, GET_PROJECTS } from "../graphql/projects";
 
 export function ProjectForm() {
   const [project, setProject] = useState({
@@ -9,7 +9,14 @@ export function ProjectForm() {
     description: "",
   });
 
-  const [createProject, { loading, error }] = useMutation(CREATE_PROJECT);
+  const [createProject, { loading, error }] = useMutation(CREATE_PROJECT, {
+    refetchQueries: [
+      {
+        query: GET_PROJECTS
+      },
+      "GetProjects"
+    ]
+  });
 
   const handleChange = ({ target: { name, value } }) => {
     setProject({
