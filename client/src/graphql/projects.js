@@ -22,6 +22,7 @@ export const GET_PROJECT = gql`
       title
       description
       status
+      isRemove
       createdAt
     }
   }

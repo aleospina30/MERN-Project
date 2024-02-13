@@ -13,8 +13,6 @@ export function ProjectDetails() {
     skip: !params.id,
   });
 
-  console.log(data?.projects);
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error!</p>;
 

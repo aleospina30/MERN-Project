@@ -3,6 +3,7 @@ import { useMutation } from "@apollo/client";
 import { CREATE_PROJECT, GET_PROJECTS } from "../graphql/projects";
 
 export function ProjectForm() {
+
   const [project, setProject] = useState({
     userId: "",
     name: "",
@@ -23,7 +24,6 @@ export function ProjectForm() {
       ...project,
       [name]: value,
     });
-    console.log(e.target.name, e.target.value);
   };
 
   const handleSubmit = (e) => {
@@ -37,7 +37,8 @@ export function ProjectForm() {
         },
       },
     });
-    console.log(project);
+    e.target.reset()
+    e.target.name.focus()
   };
 
   return (
