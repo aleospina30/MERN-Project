@@ -21,6 +21,8 @@ export const taskTypeDefs = gql`
     createdAt: String
     updatedAt: String
     deletedAt: Int
+    projectId: String
+    isRemove: Boolean
   }
 
   type Comment {
@@ -32,6 +34,7 @@ export const taskTypeDefs = gql`
   input Task_filter {
     _id: ID
     status: Statuses
+    isRemove: Boolean
   }
 
   input Task_input {
