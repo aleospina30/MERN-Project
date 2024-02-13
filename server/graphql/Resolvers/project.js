@@ -1,7 +1,7 @@
 import { projectModel, taskModel } from './../../models/index.js'
 
 
-const project = async (_, { _id }) => {
+const projects = async (_, { _id }) => {
   try {
     const query = {isRemove: false};
     if (_id) query._id = _id;
@@ -86,7 +86,7 @@ const Project_delete = async (_, { _id }) => {
 
 export const projectResolvers = {
   Query: {
-    project,
+    projects,
   },
 
   Mutation: {

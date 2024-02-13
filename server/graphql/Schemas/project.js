@@ -2,7 +2,7 @@ import { gql } from "graphql-tag";
 
 export const projectTypeDefs = gql`
   type Query {
-    project(_id: ID): [Project]
+    projects(_id: ID): [Project]
   }
   type Mutation {
     Project_save(input: Project_input): Project
